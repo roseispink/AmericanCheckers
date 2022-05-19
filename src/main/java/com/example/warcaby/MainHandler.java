@@ -2,19 +2,22 @@ package com.example.warcaby;
 
 import javafx.application.Application;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Parent;
+
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 
 
 public class MainHandler extends Application {
@@ -84,8 +87,12 @@ public class MainHandler extends Application {
 
         setClock.setPrefSize(80, 40);
         setClock.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-        setClock.setFont(new Font("Arail", 15));
+        setClock.setFont(new Font("Arial", 15));
+
+
+
         setClock.setOnAction(event -> {
+            checkWin();
             if (timer.isRunning()) {
                 System.out.println("Stop");
                 timer.stop();
@@ -107,8 +114,8 @@ public class MainHandler extends Application {
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 Quads quads = new Quads((x + y) % 2 == 0, x, y);
+                quads.setOnMousePressed(e -> checkWin());
                 board[x][y] = quads;
-
                 quadGroup.getChildren().add(quads);
 
                 GamePawn gamePawn = null;
@@ -190,8 +197,25 @@ public class MainHandler extends Application {
         }
     }
 
+    void checkWin() {
+        if (timer.checkLimit()) {
+            String type = timer.getGamePawnType()==GamePawnType.PURPLE ? "Biały" : "Fioletowy";
+            Exception e = new Exception("Twój czas się skończył! Przegrałeś :c \n" +
+                    "wygrał "+ type);
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Twój czas się skończył!");
+            alert.getDialogPane().setExpandableContent(new TextArea("Przegrałeś :c \n" +
+            "Wygrał "+ type));
+            alert.showAndWait();
+            System.exit(0);
+        }
+    }
+
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         Scene scene = new Scene(createContent());
         primaryStage.setTitle("Warcaby");
         primaryStage.setScene(scene);
@@ -218,27 +242,24 @@ public class MainHandler extends Application {
 
                 if((type==GamePawnType.PURPLE && moveQueue % 2!= 0) || (type==GamePawnType.WHITE && moveQueue % 2 ==0)){
                     switch (result.getType()) {
-                        case NONE:
-                            gamePawn.abortMove();
-                            break;
-                        case NORMAL:
+                        case NONE -> gamePawn.abortMove();
+                        case NORMAL -> {
                             gamePawn.move(newX, newY);
                             board[x0][y0].setPiece(null);
                             board[newX][newY].setPiece(gamePawn);
                             moveQueue++;
-                            break;
-                        case KILL:
+                        }
+                        case KILL -> {
                             gamePawn.move(newX, newY);
                             board[x0][y0].setPiece(null);
                             board[newX][newY].setPiece(gamePawn);
-
                             GamePawn otherGamePawn = result.getGamePawn();
                             int otherX = toBoard(otherGamePawn.getOldX());
                             int otherY = toBoard(otherGamePawn.getOldY());
                             board[otherX][otherY].setPiece(null);
                             pawnGroup.getChildren().remove(otherGamePawn);
                             moveQueue++;
-                            break;
+                        }
                     }
                 }else gamePawn.abortMove();
 

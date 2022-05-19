@@ -5,12 +5,14 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 
 public class Timer extends AnimationTimer {
 
     private long startTime;
     private boolean isRunning = false;
+    private boolean timeFlag = false;
+    private final long TIMELIMIT = 30000;
     BooleanProperty running = new SimpleBooleanProperty();
     static DoubleProperty time1 = new SimpleDoubleProperty();
     static DoubleProperty time2 = new SimpleDoubleProperty();
@@ -29,12 +31,11 @@ public class Timer extends AnimationTimer {
     Double returnTime(){
         return gamePawn==GamePawnType.PURPLE ? time1.doubleValue() : time2.doubleValue();
     }
-    GamePawnType getGamePawnType(){
-        return this.gamePawn;
-    }
-    boolean isRunning(){
-        return this.isRunning;
-    }
+    GamePawnType getGamePawnType(){ return this.gamePawn; }
+    boolean isRunning(){ return this.isRunning; }
+    boolean checkLimit(){return this.timeFlag;}
+
+
     @Override
     public void start() {
         isRunning = true;
@@ -53,6 +54,10 @@ public class Timer extends AnimationTimer {
     @Override
     public void handle(long timestamp) {
         long now = System.currentTimeMillis();
+        if(now - startTime >= TIMELIMIT){
+            timeFlag = true;
+            stop();
+        }
         if(gamePawn==GamePawnType.PURPLE) time1.set(((now - startTime) / 1000.0));
         else if(gamePawn==GamePawnType.WHITE) time2.set(((now - startTime) / 1000.0));
     }
