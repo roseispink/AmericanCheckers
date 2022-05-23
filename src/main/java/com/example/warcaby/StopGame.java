@@ -37,9 +37,8 @@ public class StopGame extends Application {
             paint = Color.valueOf("#613b87");
             ((StopController)fxmlLoader.getController()).getWinLabel().setText("FIOLETOWY");
         }else {
-            paint = Color.valueOf("#fafafa");
+            paint = Color.valueOf("#7fb8b7");
             ((StopController)fxmlLoader.getController()).getWinLabel().setText("BIAŁY");
-            ((StopController)fxmlLoader.getController()).getWinLabel().setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         }
         if(reason) ((StopController)fxmlLoader.getController()).getReasonLabel().setText("Wszystkie pionki zebrane");
         else ((StopController)fxmlLoader.getController()).getReasonLabel().setText("Czas na ruch upłynął");

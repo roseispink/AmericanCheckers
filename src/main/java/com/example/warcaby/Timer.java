@@ -40,7 +40,6 @@ public class Timer extends AnimationTimer {
     boolean isRunning(){
         return this.isRunning;
     }
-    boolean isStopGame(){return true;}
     @Override
     public void start() {
         isRunning = true;

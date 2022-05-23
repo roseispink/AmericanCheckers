@@ -246,27 +246,24 @@ public class MainHandler extends Application {
 
                 if((type==GamePawnType.PURPLE && moveQueue % 2!= 0) || (type==GamePawnType.WHITE && moveQueue % 2 ==0)){
                     switch (result.getType()) {
-                        case NONE:
-                            gamePawn.abortMove();
-                            break;
-                        case NORMAL:
+                        case NONE -> gamePawn.abortMove();
+                        case NORMAL -> {
                             gamePawn.move(newX, newY);
                             board[x0][y0].setPiece(null);
                             board[newX][newY].setPiece(gamePawn);
                             moveQueue++;
-                            break;
-                        case KILL:
+                        }
+                        case KILL -> {
                             gamePawn.move(newX, newY);
                             board[x0][y0].setPiece(null);
                             board[newX][newY].setPiece(gamePawn);
-
                             GamePawn otherGamePawn = result.getGamePawn();
                             int otherX = toBoard(otherGamePawn.getOldX());
                             int otherY = toBoard(otherGamePawn.getOldY());
                             board[otherX][otherY].setPiece(null);
                             pawnGroup.getChildren().remove(otherGamePawn);
                             moveQueue++;
-                            break;
+                        }
                     }
                 }else gamePawn.abortMove();
 
