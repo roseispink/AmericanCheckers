@@ -1,4 +1,4 @@
-package com.example.warcaby;
+package com.example.warcaby.Elements;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;

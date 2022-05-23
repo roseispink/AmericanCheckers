@@ -1,4 +1,6 @@
-package com.example.warcaby;
+package com.example.warcaby.Move;
+
+import com.example.warcaby.Elements.GamePawn;
 
 public class MoveResult {
     private final MoveType type;

@@ -1,5 +1,7 @@
 package com.example.warcaby;
 
+import com.example.warcaby.Controller.StopController;
+import com.example.warcaby.Elements.GamePawnType;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;

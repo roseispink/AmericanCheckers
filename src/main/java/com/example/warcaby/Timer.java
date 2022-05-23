@@ -1,5 +1,6 @@
 package com.example.warcaby;
 
+import com.example.warcaby.Elements.GamePawnType;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -14,7 +15,7 @@ public class Timer extends AnimationTimer {
 
     private long startTime;
     private boolean isRunning = false;
-    private final long TIMELIMIT = 5000;
+    private final long TIMELIMIT = 30000;
     BooleanProperty running = new SimpleBooleanProperty();
     static DoubleProperty time1 = new SimpleDoubleProperty();
     static DoubleProperty time2 = new SimpleDoubleProperty();

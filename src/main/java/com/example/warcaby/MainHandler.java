@@ -1,9 +1,13 @@
 package com.example.warcaby;
 
+import com.example.warcaby.Elements.GamePawn;
+import com.example.warcaby.Elements.GamePawnType;
+import com.example.warcaby.Elements.Quads;
+import com.example.warcaby.Move.MoveResult;
+import com.example.warcaby.Move.MoveType;
 import javafx.application.Application;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -52,8 +56,8 @@ public class MainHandler extends Application {
     Stage stage = new Stage();
 
     private short moveQueue = 0;
-    private short whitePawns = 8;
-    private short purplePawns = 8;
+    private short whitePawns = 12;
+    private short purplePawns = 12;
 
     private Parent createContent() {
         Pane root = new Pane();
@@ -71,7 +75,7 @@ public class MainHandler extends Application {
         totalTime.relocate(WIDTH* PAWN_SIZE +60, 220);
         timeAll1.relocate(WIDTH* PAWN_SIZE +85, 260);
 
-        setClock.relocate(WIDTH*PAWN_SIZE + 85, 360);
+        setClock.relocate(WIDTH*PAWN_SIZE + 65, 360);
 
         player2.relocate(WIDTH* PAWN_SIZE +70, 500);
         roundTime2.relocate(WIDTH* PAWN_SIZE + 60, 540);
@@ -91,7 +95,7 @@ public class MainHandler extends Application {
         player2.setFont(new Font("Arial", 22));
 
         setClock.setPrefSize(70, 40);
-        setClock.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        setClock.setBackground(new Background(new BackgroundFill(Color.valueOf("#787777"), CornerRadii.EMPTY, Insets.EMPTY)));
         setClock.setFont(new Font("Arial", 13));
         setClock.setOnAction(event -> {
             if (timer.isRunning()) {
@@ -207,10 +211,8 @@ public class MainHandler extends Application {
     }
 
     private void checkQueen(GamePawn gamePawn, int newX, int newY){
-        if(gamePawn.getType() == GamePawnType.WHITE && newY == 0 && (newX == 1 || newX == 3 || newX == 5 || newX == 7)) gamePawn.setBonus(true);
-        else if(gamePawn.getType() == GamePawnType.PURPLE  && newY == 7 && (newX == 0 || newX == 2 || newX == 4 || newX == 6) ) {
-            gamePawn.setBonus(true);
-        }
+        if(gamePawn.getType() == GamePawnType.WHITE && moveQueue%2== 0 && newY == 0 && (newX == 1 || newX == 3 || newX == 5 || newX == 7)) gamePawn.setBonus(true);
+        else if(gamePawn.getType() == GamePawnType.PURPLE && moveQueue %2!= 0 && newY == 7 && (newX == 0 || newX == 2 || newX == 4 || newX == 6) ) gamePawn.setBonus(true);
     }
 
 
@@ -220,6 +222,8 @@ public class MainHandler extends Application {
         primaryStage.setTitle("Warcaby");
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest(e-> Platform.exit());
     }
 
     private GamePawn makePiece(GamePawnType type, int x, int y) {

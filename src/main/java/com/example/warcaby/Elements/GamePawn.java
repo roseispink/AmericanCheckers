@@ -1,4 +1,4 @@
-package com.example.warcaby;
+package com.example.warcaby.Elements;
 
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -9,7 +9,7 @@ import static com.example.warcaby.MainHandler.PAWN_SIZE;
 
 public class GamePawn extends StackPane {
 
-    private GamePawnType type;
+    private final GamePawnType type;
 
     private boolean bonus = false;
 

@@ -1,10 +1,12 @@
-package com.example.warcaby;
+package com.example.warcaby.Controller;
 
+import com.example.warcaby.MainHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
 public class StopController {
     @FXML
@@ -17,10 +19,6 @@ public class StopController {
         System.exit(0);
     }
 
-    @FXML
-    void start(ActionEvent event) {
-
-    }
     public final Label getWinLabel(){
         return winPlayer;
     }

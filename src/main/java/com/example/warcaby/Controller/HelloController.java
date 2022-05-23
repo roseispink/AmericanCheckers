@@ -1,4 +1,4 @@
-package com.example.warcaby;
+package com.example.warcaby.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
