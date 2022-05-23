@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 
+import java.io.IOException;
+
 
 public class MainHandler extends Application {
 
@@ -40,12 +42,18 @@ public class MainHandler extends Application {
     private static final Label timeAll1 = new Label();
     private static final Label timeP2= new Label();
     private static final Label timeAll2 = new Label();
-    static Double t1 = 0.0;
-    static Double t2 = 0.0;
+    private static Double t1 = 0.0;
+    private static Double t2 = 0.0;
+
+
 
     private final Timer timer = new Timer(timeP1, timeP2);
+    private final StopGame stopGame = new StopGame();
+    Stage stage = new Stage();
 
-    short moveQueue = 0;
+    private short moveQueue = 0;
+    private short whitePawns = 8;
+    private short purplePawns = 8;
 
     private Parent createContent() {
         Pane root = new Pane();
@@ -82,9 +90,9 @@ public class MainHandler extends Application {
         player2.setTextFill(Color.valueOf("#ffffff"));
         player2.setFont(new Font("Arial", 22));
 
-        setClock.setPrefSize(80, 40);
+        setClock.setPrefSize(70, 40);
         setClock.setBackground(new Background(new BackgroundFill(Color.LIGHTSKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-        setClock.setFont(new Font("Arail", 15));
+        setClock.setFont(new Font("Arial", 13));
         setClock.setOnAction(event -> {
             if (timer.isRunning()) {
                 System.out.println("Stop");
@@ -133,12 +141,10 @@ public class MainHandler extends Application {
 
     private MoveResult tryMove(GamePawn gamePawn, int newX, int newY) {
         if (board[newX][newY].hasPiece()) {
-            System.out.println("Przeciwnik");
             return new MoveResult(MoveType.NONE);
         }
 
         if((newX + newY) % 2 == 0){
-            System.out.println("Wyjscie z planszy");
             return new MoveResult(MoveType.NONE);
         }
 
@@ -153,25 +159,24 @@ public class MainHandler extends Application {
 
             int x1 = x0 + (newX - x0) / 2;
             int y1 = y0 + (newY - y0) / 2;
-            System.out.println("KILL: "+ y0 + "  " +x0);
-            System.out.println(newY + "  " +newX);
-            System.out.println(y1 + "  " +x1);
 
             if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != gamePawn.getType()) {
                 checkQueen(gamePawn, newX, newY);
+                if(board[x1][y1].getPiece().getType()==GamePawnType.WHITE) whitePawns--;
+                else purplePawns--;
+                checkEnd();
                 return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
             }
         }else if(gamePawn.getBonus() && Math.abs(newX - x0) == 1){
-            System.out.println("Normlane");
             return new MoveResult(MoveType.NORMAL);
         }else if(gamePawn.getBonus() && Math.abs(newX - x0) == 2) {
             int x1 = Math.abs(x0 + (newX - x0) / 2);
             int y1 = Math.abs(y0 + (newY - y0) / 2);
 
-            System.out.println("KILL for Queen: "+ y0 + "  " +x0);
-            System.out.println(newY + "  " +newX);
-            System.out.println(y1 + "  " +x1);
             if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != gamePawn.getType()) {
+                if(board[x1][y1].getPiece().getType()==GamePawnType.WHITE) whitePawns--;
+                else purplePawns--;
+                checkEnd();
                 return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
             }
         }
@@ -183,6 +188,24 @@ public class MainHandler extends Application {
         return (int)(pixel + PAWN_SIZE / 2) / PAWN_SIZE;
     }
 
+    private void checkEnd(){
+        if(whitePawns==0){
+            stopGame.setType(GamePawnType.PURPLE);
+            try {
+                stopGame.start(stage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else if(purplePawns==0){
+            stopGame.setType(GamePawnType.WHITE);
+            try {
+                stopGame.start(stage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void checkQueen(GamePawn gamePawn, int newX, int newY){
         if(gamePawn.getType() == GamePawnType.WHITE && newY == 0 && (newX == 1 || newX == 3 || newX == 5 || newX == 7)) gamePawn.setBonus(true);
         else if(gamePawn.getType() == GamePawnType.PURPLE  && newY == 7 && (newX == 0 || newX == 2 || newX == 4 || newX == 6) ) {
@@ -190,8 +213,9 @@ public class MainHandler extends Application {
         }
     }
 
+
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         Scene scene = new Scene(createContent());
         primaryStage.setTitle("Warcaby");
         primaryStage.setScene(scene);
